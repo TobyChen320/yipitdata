@@ -7,7 +7,7 @@ If you wish to download your own copy of the files in the bucket. Just enter thi
 [aws-cli installation](https://aws.amazon.com/cli/)
 
 '''
-aws s3 cp --recursive s3://yipit-oscars-data "folder_name_to_download_to"
+aws s3 cp --recursive s3://yipit-oscars-data folder_name_to_download_to
 '''
 
 # Running the code
