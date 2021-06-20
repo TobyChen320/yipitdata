@@ -137,7 +137,7 @@ class Oscars():
         for film in self.winning_films:
             print(film['title'], film['year'], film['budget'])
             # Uncomment this if you want to see the average budget.
-            # print("Average budget of all winners: $", self.average_budget())
+            # print("Average budget: $", self.average_budget())
     
     def run(self):
         '''
