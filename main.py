@@ -122,12 +122,12 @@ class Oscars():
     #     '''
     #     movies = requests.get(self.base_url).json()
     #     df = pd.concat([pd.DataFrame(pd.json_normalize(x)) for x in movies['results']], ignore_index=True)
-    #     df["Detail URL"] = [x[0]["Detail URL"] for x in df["films"]]
-    #     df["Producer(s)"] = [x[0]["Producer(s)"] for x in df["films"]]
-    #     df["Production Company(s)"] = [x[0]["Production Company(s)"] for x in df["films"]]
-    #     df["Wiki URL"] = [x[0]["Wiki URL"] for x in df["films"]]
-    #     df["Winner"] = [x[0]["Winner"] for x in df["films"]]
-    #     df["films"] = [x[0]["Film"] for x in df["films"]]
+    #     df['Detail URL'] = [x[0]['Detail URL'] for x in df['films']]
+    #     df['Producer(s)'] = [x[0]['Producer(s)'] for x in df['films']]
+    #     df['Production Company(s)'] = [x[0]['Production Company(s)'] for x in df['films']]
+    #     df['Wiki URL'] = [x[0]['Wiki URL'] for x in df['films']]
+    #     df['Winner'] = [x[0]['Winner'] for x in df['films']]
+    #     df['films'] = [x[0]['Film'] for x in df['films']]
     #     df.to_csv('movies.csv', index=False)
 
     def print_all(self):
