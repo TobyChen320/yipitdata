@@ -102,6 +102,143 @@ class Oscars():
                         film['budget'] = high_value
 
     # if for some reason you wish to find out the average budget for all the winning movies together (only works for the movies that have a budget value)
+    def average_budget(self):
+        '''
+        Calculates the average budget of the winning movies that have budget data
+        '''
+        total_movies = 0
+        total_dollars = 0
+        for film in self.winning_films:
+            if film['budget'] != None:
+                total_movies += 1
+                total_dollars += film['budget']
+                average = int(total_dollars/total_movies)
+                return average
+
+    # this just makes it easier on the eyes
+    def movies_reformat(self):
+        '''
+        Converts the url into a pandas dataframe and into a csv file
+        '''
+        grab = requests.get(self.base_url).json()
+        movies = pd.read_json(url)
+        df = pd.concat([pd.DataFrame(pd.json_normalize(x)) for x in movies['results']], ignore_index=True)
+        df['Detail URL'] = [x[0]['Detail URL'] for x in df['films']]
+        df['Producer(s)'] = [x[0]['Producer(s)'] for x in df['films']]
+        df['Production Company(s)'] = [x[0]['Production Company(s)'] for x in df['films']]
+        df['Wiki URL'] = [x[0]['Wiki URL'] for x in df['films']]
+        df['Winner'] = [x[0]['Winner'] for x in df['films']]
+        df['films'] = [x[0]['Film'] for x in df['films']]
+        df.to_csv('movies.csv', index=False)
+
+    def print_all(self):
+        '''
+        Prints results
+        '''
+        for film in self.winning_films:
+            print(film['title'], film['year'], film['budget'])
+            # Uncomment this if you want to see the average budget.
+            # print("Average budget: $", self.average_budget())
+    
+    def run(self):
+        '''
+        Run function
+        '''
+        self.search()
+        self.get_budget()
+        self.clean()
+        self.print_all()
+        # uncomment if you wish to reformat data
+        # self.movies_reformat()
+
+# class Oscars2():
+#     '''
+#     Hits data file url that I downloaded and pushed to git - https://raw.githubusercontent.com/TobyChen320/yipitdata/main/data/movies -
+#     And returns every Oscar non-winning movie and its budget along with the average budget.
+#     '''
+#     def __init__(self):
+#         self.base_url = 'https://raw.githubusercontent.com/TobyChen320/yipitdata/main/data/movies'
+#         # create a list of dictionaries that stores film title, year, url, and budget
+#         self.losing_films = []
+  
+#     def search(self):
+#         '''
+#         Searches the data to return non-winning movies.
+#         This will also add the movies that fit the criteria into losing_films.
+#         '''
+#         main = requests.get(self.base_url).json()
+#         yearly_list = main['results']
+#         # loop through the results from main to get each year's nominations
+#         for year in yearly_list:
+#             yearly_films = year['films']
+#         # loop through each film every year to find the losers
+#             for films in yearly_films:
+#                 # if the film is a loser add to losing_films list
+#                 if films['Winner'] != True:
+#                     loser = {}
+#                     loser['film'] = films['Film']
+#                     loser['year'] = year['year']
+#                     loser['url'] = films['Detail URL']
+#                     self.losing_films.append(loser)
+
+#     def clean(self):
+#         '''
+#         Cleans the data by removing irrelevant characters such as currency symbol.
+#         It will perform foreign exchange calculation if needed and it gives numeric value for 'million'.
+#         If given a budget range; it will use the high value of that range.
+#         '''
+#         # loop through losing films
+#         for film in self.losing_films:
+#           movie = requests.get(film['url'])
+#           if movie.status_code == 200:
+#             film['budget'] = movie.json().get('Budget', None)
+#             # clean title value
+#             title = film['film']
+#             # This essentially removes any nested values.
+#             film['title'] = re.sub("\[[^\]][\]]", '', title)
+#             # clean year value
+#             year = film['year']
+#             # This essentially removes any nested values. Worked great for title, but year was a little off. I was able to clean most of it but there were exceptions. [22], [23]
+#             film['year'] = re.sub("\[[^\]][\]]", '', year)
+#             # if the film budget is not None it will clean the budget value
+#             if film['budget'] != None:
+#               budget = film['budget']
+#               # print(budget)
+#               # if the first character is not $, clean the value
+#               if budget[0] != '$':
+#                 # if the value is '£', clean and multiply by current exchange rate (As of 6/19/21 £1 = $1.38) to USD
+#                 if budget[0] == '£':
+#                   clean_currency = re.sub('£', '', budget)
+#                   # This regex removes the brackets and all values inside the brackets.
+#                   remove_footnotes = re.sub('[\(\[].*?[\)\]]', '', clean_currency)
+#                   currency = re.sub('million.*', ' 1380000', remove_footnotes)
+#                   try:
+#                     first = [float(x.replace(',', '')) for x in currency.split( )]
+#                     second = int(np.prod(np.array(first)))
+#                     film['budget'] = second
+#                   except ValueError:
+#                     range_value = currency[0].split('-')
+#                     high_value = int(range_value[1]) * int(range_value[2])
+#                     film['budget'] = high_value
+#                     # if the starting character is U as opposed to '$'
+#                 elif budget[0] == 'US$':
+#                   remove_currency = re.sub('[US$ ]', '', budget)
+#                   remove_footnotes = re.sub("[\(\[].*?[\)\]]", '', remove_currency)
+#                   currency = re.sub('million.*', ' 1000000', remove_footnotes)
+#                   try:
+#                     first = [float(x.replace(',', '')) for x in currency.split( )]
+#                     second = int(np.prod(np.array(first)))
+#                     film['budget'] = second
+#                   except ValueError:
+#                     range_value = currency[0].split('-')
+#                     # print(range_value)
+#                     high_value = int(range_value[1]) * int(range_value[2])
+#                     film['budget'] = high_value
+#               print(film['film'], film['year'], film['budget'])
+              # Uncomment this if you want to see the average budget.
+              # print("Average budget: $", self.average_budget())
+
+    # if for some reason you wish to find out the average budget for all the winning movies together (only works for the movies that have a budget value)
     # def average_budget(self):
     #     '''
     #     Calculates the average budget of the winning movies that have budget data
@@ -130,25 +267,29 @@ class Oscars():
     #     df['films'] = [x[0]['Film'] for x in df['films']]
     #     df.to_csv('movies.csv', index=False)
 
-    def print_all(self):
-        '''
-        Prints results
-        '''
-        for film in self.winning_films:
-            print(film['title'], film['year'], film['budget'])
-            # Uncomment this if you want to see the average budget.
-            # print("Average budget: $", self.average_budget())
+    # def print_all(self):
+    #     '''
+    #     Prints results
+    #     '''
+    #     for film in self.losing_films:
+    #       #  movie = requests.get(film['url'])
+    #       #  if requests.get(film['url']).status_code == 200:
+    #       #    film['budget'] = movie.json().get('Budget', None)
+    #          print(film['film'], film['year'], film['budget'])
+    #          # Uncomment this if you want to see the average budget.
+    #          # print("Average budget: $", self.average_budget())
     
-    def run(self):
-        '''
-        Run function
-        '''
-        self.search()
-        self.get_budget()
-        self.clean()
-        self.print_all()
+    # def run(self):
+    #     '''
+    #     Run function
+    #     '''
+    #     self.search()
+    #     self.clean()
         # uncomment if you wish to reformat data
         # self.movies_reformat()
 
+# Choose which one you want
 start = Oscars()
 start.run()
+# start = Oscars2
+# start.run()
